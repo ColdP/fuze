@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>免责声明</title>
+    <style>
+        /* --- 基础设置 --- */
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #000;
+            font-family: sans-serif;
+            position: relative;
+        }
+
+        /* --- 背景文字容器 --- */
+        #background-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        /* --- 单个背景文字样式 --- */
+        .floating-text {
+            position: absolute;
+            white-space: nowrap; /* 防止文字换行 */
+            will-change: transform, opacity; /* 优化动画性能 */
+            user-select: none; /* 禁止用户选中文字 */
+        }
+
+        /* --- 中心主要文字 --- */
+        #center-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000; /* 确保在最顶层 */
+            
+            font-size: 2.5rem; /* 在移动设备上调整字体大小 */
+            font-weight: bold;
+            color: #ffffff;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 20px 40px;
+            border-radius: 15px;
+            text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000; /* 红色辉光效果 */
+            white-space: nowrap;
+            border: 2px solid #ff4444;
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.5);
+        }
+
+        /* --- 响应式设计：针对小屏幕设备 --- */
+        @media (max-width: 768px) {
+            #center-text {
+                font-size: 1.5rem;
+                padding: 15px 20px;
+                width: 90%;
+                text-align: center;
+            }
+        }
+        @media (max-width: 480px) {
+            #center-text {
+                font-size: 1.1rem;
+                padding: 10px 15px;
+            }
+        }
+
+        /* --- 定义多种动画效果 --- */
+        @keyframes move-left {
+            from { transform: translateX(100vw); }
+            to { transform: translateX(-100%); }
+        }
+
+        @keyframes move-right {
+            from { transform: translateX(-100%); }
+            to { transform: translateX(100vw); }
+        }
+        
+        @keyframes move-up-down {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0); }
+        }
+
+        @keyframes fade-in-out {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
+        }
+
+        @keyframes zoom-and-spin {
+            from { transform: scale(0.1) rotate(0deg); opacity: 0; }
+            to { transform: scale(2) rotate(360deg); opacity: 1; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- 背景文字的容器 -->
+    <div id="background-container"></div>
+
+    <!-- 屏幕中心的主要文字 -->
+    <div id="center-text">
+        本人不对(23:00-11:00)的任何行为负责
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.getElementById('background-container');
+            const textToFloat = '本人不对(23:00-11:00)的任何行为负责';
+            const textCount = 100; // 生成的文字数量
+
+            // 定义一系列“丑陋”的样式
+            const fonts = [
+                'Arial', 'Helvetica', 'sans-serif',
+                'Times New Roman', 'Times', 'serif',
+                'Courier New', 'Courier', 'monospace',
+                'Georgia', 'serif',
+                'Palatino', 'serif',
+                'Garamond', 'serif',
+                'Comic Sans MS', 'cursive', 'sans-serif', // 经典丑陋字体
+                'Impact', 'fantasy',
+                'Tahoma', 'Verdana', 'sans-serif'
+            ];
+
+            const colors = [
+                '#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#FF00FF', '#00FFFF',
+                '#FFA500', '#ADFF2F', '#FF69B4', '#8A2BE2', '#7FFF00', '#DC143C'
+            ];
+
+            const fontWeights = ['normal', 'bold', 'lighter', 'bolder'];
+            
+            // 定义动画类名数组
+            const animations = [
+                'move-left', 'move-right', 'move-up-down', 'fade-in-out', 'zoom-and-spin'
+            ];
+
+            // 创建并添加文字元素
+            for (let i = 0; i < textCount; i++) {
+                const textElement = document.createElement('div');
+                textElement.classList.add('floating-text');
+                textElement.innerText = textToFloat;
+
+                // 随机应用样式
+                textElement.style.fontFamily = fonts[Math.floor(Math.random() * fonts.length)];
+                textElement.style.color = colors[Math.floor(Math.random() * colors.length)];
+                textElement.style.fontSize = `${Math.random() * 40 + 10}px`; // 10px 到 50px
+                textElement.style.fontWeight = fontWeights[Math.floor(Math.random() * fontWeights.length)];
+                
+                // 随机定位
+                textElement.style.top = `${Math.random() * 100}%`;
+                textElement.style.left = `${Math.random() * 100}%`;
+
+                // 随机应用动画
+                const animationName = animations[Math.floor(Math.random() * animations.length)];
+                const duration = Math.random() * 20 + 10; // 10s 到 30s
+                const delay = Math.random() * 5; // 0s 到 5s 延迟
+                
+                textElement.style.animation = `${animationName} ${duration}s linear ${delay}s infinite alternate`;
+                
+                // 对于不会自己消失的动画，设置一个随机的透明度
+                if (animationName !== 'fade-in-out' && animationName !== 'zoom-and-spin') {
+                    textElement.style.opacity = Math.random() * 0.7 + 0.2; // 0.2 到 0.9
+                }
+
+                container.appendChild(textElement);
+            }
+        });
+    </script>
+
+</body>
+</html>
